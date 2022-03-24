@@ -8,47 +8,45 @@ import java.util.List;
 @Service
 public class RestaurantDataBaseService {
 
-    private List<Restaurant> restaurants = new ArrayList<>();
+    private RestaurantRepository restaurantRepository;
+    private TableRepository tableRepository;
+
+    public RestaurantDataBaseService(RestaurantRepository restaurantRepository,
+                                     TableRepository tableRepository) {
+        this.restaurantRepository = restaurantRepository;
+        this.tableRepository = tableRepository;
+    }
 
     public Restaurant createRestaurant(Restaurant restaurantToCreate) {
-        restaurants.add(restaurantToCreate);
+        this.restaurantRepository.save(restaurantToCreate);
         return restaurantToCreate;
     }
 
-    public List<Restaurant> getRestaurants() {return restaurants;}
-
-    public void removeAllRestaurants() {
-        restaurants = new ArrayList<>();
+    public List<Restaurant> getRestaurants() {
+        List<Restaurant> restaurants = new ArrayList<>();
+        this.restaurantRepository.findAll().forEach(restaurants::add);
+        return restaurants;
     }
 
+    public void removeAllRestaurants() {
+        this.restaurantRepository.deleteAll();
+    }
 
-    public void updateRestaurant(Restaurant restaurantToUpdate, String restaurantId) throws Exception {
-        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
-            if (restaurant.getId().equals(restaurantId)) {
+    public Restaurant updateRestaurant(Restaurant restaurantToUpdate, String restaurantId) throws Exception {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
                 restaurant.setType(restaurantToUpdate.getType());
                 restaurant.setName(restaurantToUpdate.getName());
-                return;
-            }
-        }
-        throw new Exception("No s'ha trobat");
+                restaurantRepository.save(restaurant);
+                return restaurant;
+
     }
 
     public Restaurant getRestaurant(String restaurantId) throws Exception {
-        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
-            if (restaurant.getId().equals(restaurantId)) {
-                return restaurant;
-            }
-        }
-        throw new Exception("No s'ha trobat");
-
+        return this.restaurantRepository.findById(restaurantId).get();
     }
 
     public void removeRestaurant(String restaurantId) {
-        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
-            if (restaurant.getId().equals(restaurantId)) {
-                restaurants.remove(restaurant);
-            }
-        }
+        this.restaurantRepository.deleteById(restaurantId);
     }
 
     public void assignClientsOnRestaurant(String restaurantId, int clients) throws Exception {
@@ -79,13 +77,16 @@ public class RestaurantDataBaseService {
         restaurant.removeTable(tableId);
     }
 
-    private Restaurant findRestaurant(String restaurantId) throws Exception {
-        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
-            if (restaurant.getId().equals(restaurantId)) {
-                return restaurant;
-            }
-        }
-        throw new Exception("No s'ha trobat");
-    }
+//    private Restaurant findRestaurant(String restaurantId) throws Exception {
+//        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
+//            if (restaurant.getId().equals(restaurantId)) {
+//                return restaurant;
+//            }
+//        }
+//        throw new Exception("No s'ha trobat");
+//    }
 
+    private Restaurant searchRestaurant(String restaurantId) {
+        return restaurantRepository.findById(restaurantId).get();
+    }
 }

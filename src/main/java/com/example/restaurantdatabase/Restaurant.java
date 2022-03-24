@@ -1,11 +1,16 @@
 package com.example.restaurantdatabase;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity(name = "restaurants")
 public class Restaurant {
 
+    @javax.persistence.Id
     private String Id= UUID.randomUUID().toString();
 
     private static final int MAX_CAPACITY = 24;
@@ -16,7 +21,9 @@ public class Restaurant {
     private static final int PIZZERIA = 1;
     private static final int CHINESE = 2;
     private static final int KEBAB = 3;
-    private List<Table> tables = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Table> tableList = new ArrayList<>();
 
     public Restaurant(){
     }
@@ -92,11 +99,11 @@ public class Restaurant {
     }
 
     public List<Table> getTables() {
-        return tables;
+        return tableList;
     }
 
     private boolean hasRemainingTables() {
-        return this.tables.size() < MAX_NUMBER_OF_TABLES;
+        return this.tableList.size() < MAX_NUMBER_OF_TABLES;
     }
 
     public void removeTable(String tableId) throws Exception {
@@ -121,4 +128,5 @@ public class Restaurant {
         }
         throw new Exception("No s'ha trobat");
     }
+
 }

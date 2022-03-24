@@ -9,11 +9,10 @@ import java.util.List;
 public class RestaurantDataBaseRestController {
 
     private RestaurantDataBaseService restaurantDataBaseService;
+
     public RestaurantDataBaseRestController(RestaurantDataBaseService restaurantDataBaseService) {
         this.restaurantDataBaseService = restaurantDataBaseService;
     }
-
-
 
     @PostMapping("/restaurants")
     public Restaurant createRestaurant(@RequestBody Restaurant restaurantToCreate) {
