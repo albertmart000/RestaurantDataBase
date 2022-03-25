@@ -32,6 +32,18 @@ public class Table {
         return id;
     }
 
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public Table(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
     public int addClients(int numOfPeople) throws Exception {
         checkValidNumOfPeople(numOfPeople);
         this.currentSeatings = numOfPeople;

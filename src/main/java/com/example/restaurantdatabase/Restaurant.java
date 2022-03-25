@@ -1,7 +1,6 @@
 package com.example.restaurantdatabase;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,17 +66,18 @@ public class Restaurant {
         this.name = name;
     }
 
-    public void addClients(int numOfPeople) throws Exception {
+    public List<Table> addTables(int numOfPeople) throws Exception {
         checkPeopleCanEnter(numOfPeople);
 
         while (numOfPeople > 0 && hasRemainingTables()) {
             Table table = new Table();
             numOfPeople = table.addClients(numOfPeople);
-            tables.add(table);
+            table.setRestaurant(this);
+            this.tableList.add(table);
         }
 
-
         if (numOfPeople > 0) throw new Exception("No quedan taules");
+        return tableList;
 
     }
 
@@ -88,7 +88,7 @@ public class Restaurant {
 
     public int getCurrentSeatings() {
         int result = 0;
-        for (Table table : tables) {
+        for (Table table : tableList) {
             result += table.getCurrentSeatings();
         }
         return result;
@@ -98,7 +98,7 @@ public class Restaurant {
         return MAX_CAPACITY - getCurrentSeatings();
     }
 
-    public List<Table> getTables() {
+    public List<Table> getTableList() {
         return tableList;
     }
 
@@ -106,27 +106,5 @@ public class Restaurant {
         return this.tableList.size() < MAX_NUMBER_OF_TABLES;
     }
 
-    public void removeTable(String tableId) throws Exception {
-        for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).getId().equals(tableId)) {
-                tables.remove(i);
-                break;
-            }
-        }
-    }
-
-    public void removeAllTables() {
-        tables= new ArrayList<>();
-    }
-
-    public Table getTable(String tableId) throws Exception {
-
-        for (Table table: tables) {
-            if (table.getId().equals(tableId)) {
-                return table;
-            }
-        }
-        throw new Exception("No s'ha trobat");
-    }
 
 }

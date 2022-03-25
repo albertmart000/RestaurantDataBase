@@ -50,41 +50,29 @@ public class RestaurantDataBaseService {
     }
 
     public void assignClientsOnRestaurant(String restaurantId, int clients) throws Exception {
-        Restaurant restaurant = findRestaurant(restaurantId);
-        restaurant.addClients(clients);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).get();
+                 List<Table> tables =  restaurant.addTables(clients);
+                 tableRepository.saveAll(tables);
     }
 
 
     public List<Table> getTables(String restaurantId) throws Exception {
-        Restaurant restaurant = findRestaurant(restaurantId);
-        List<Table> tables = restaurant.getTables();
-        return tables;
+        Restaurant restaurant = searchRestaurant(restaurantId);
+        return restaurant.getTableList();
     }
 
     public void removeAllTables(String restaurantId) throws Exception {
-        Restaurant restaurant = findRestaurant(restaurantId);
-        restaurant.getTables().clear();
+        Restaurant restaurant = searchRestaurant(restaurantId);
+        tableRepository.deleteAllByRestaurant(restaurant);
     }
 
     public Table getTable(String restaurantId, String tableId) throws Exception {
-        Restaurant restaurant = findRestaurant(restaurantId);
-        Table table = restaurant.getTable(tableId);
-        return table;
+        return tableRepository.findById(tableId).get();
     }
 
-    public void removeTable(String restaurantId, String tableId) throws Exception {
-        Restaurant restaurant = findRestaurant(restaurantId);
-        restaurant.removeTable(tableId);
+    public void removeTable(String tableId) throws Exception {
+        this.tableRepository.deleteById(tableId);
     }
-
-//    private Restaurant findRestaurant(String restaurantId) throws Exception {
-//        for (Restaurant restaurant : new ArrayList<>(restaurants)) {
-//            if (restaurant.getId().equals(restaurantId)) {
-//                return restaurant;
-//            }
-//        }
-//        throw new Exception("No s'ha trobat");
-//    }
 
     private Restaurant searchRestaurant(String restaurantId) {
         return restaurantRepository.findById(restaurantId).get();

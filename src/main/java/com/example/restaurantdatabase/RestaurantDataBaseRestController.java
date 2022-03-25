@@ -49,7 +49,6 @@ public class RestaurantDataBaseRestController {
     public void assignClientsOnRestaurant(@PathVariable String restaurantId, @RequestBody String jsonString) throws Exception {
         JSONObject json = new JSONObject(jsonString);
         int clients = json.getInt("clients");
-
         restaurantDataBaseService.assignClientsOnRestaurant(restaurantId, clients);
     }
 
@@ -69,8 +68,8 @@ public class RestaurantDataBaseRestController {
     }
 
     @DeleteMapping("/restaurants/{restaurantId}/tables/{tableId}")
-    public void removeTable(@PathVariable String restaurantId, @PathVariable String tableId) throws Exception {
-        restaurantDataBaseService.removeTable(restaurantId,tableId);
+    public void removeTable(@PathVariable String tableId, @PathVariable String restaurantId) throws Exception {
+        restaurantDataBaseService.removeTable(tableId);
     }
 
 
